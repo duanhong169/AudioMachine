@@ -30,6 +30,18 @@ class AudioMachine {
         this.audioInterceptors = Collections.unmodifiableList(builder.audioInterceptors);
     }
 
+    String selfIntroduction() {
+        return "AudioMachine >>>>>>" +
+                "\n------------------------ AudioMachine -----------------------\n" +
+                "AudioSource: " + audioSource.getClass().getSimpleName() +
+                ", sampleRate: " + audioSource.getSampleRate() +
+                "\n" +
+                "AudioCodec: " + audioCodec.getClass().getSimpleName() +
+                "\n" +
+                "AudioProcessor: " +  audioProcessor.selfIntroduction() +
+                "\n----------------------- AudioMachine ------------------------";
+    }
+
     void start(EventListener eventListener) {
         Logger.logD("-------- start() --------");
         this.eventListener = eventListener;

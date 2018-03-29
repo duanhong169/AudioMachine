@@ -9,11 +9,15 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import timber.log.Timber;
 import top.defaults.audio.Error;
+import top.defaults.audio.Keys;
 import top.defaults.audio.SpeechRecognizer;
 
 public class MainActivity extends AppCompatActivity {
@@ -85,7 +89,10 @@ public class MainActivity extends AppCompatActivity {
 
                             }
                         });
-                        speechRecognizer.startListening(null);
+                        Map<String, Object> params = new HashMap<>(10);
+                        params.put(Keys.PACKAGE_SIZE, 4000);
+                        params.put(Keys.THREAD_COUNT, 5);
+                        speechRecognizer.startListening(params);
                     }
                 });
     }

@@ -28,6 +28,8 @@ public class SpeechRecognizer {
 
     private Context context;
     private AudioMachine machine;
+    private AudioMachine.EventListener machineEventListener;
+    private AudioInterceptor interceptor;
     private ResultParser<Results> parser = new ResultParser<Results>() {
         @Override
         public Results parse(RawResult rawResult) {
@@ -42,49 +44,7 @@ public class SpeechRecognizer {
     public SpeechRecognizer(Context context) {
         this.context = context;
         callbackHandler = new CallbackHandler(context);
-    }
-
-    /**
-     * 设置语音识别监听器
-     *
-     * @param listener 监听器
-     */
-    public void setRecognitionListener(RecognitionListener listener) {
-        callbackHandler.setRecognitionListener(listener);
-    }
-
-    /**
-     * 开始监听语音输入
-     *
-     * @param params 识别参数
-     */
-    public void startListening(Map<String, Object> params) {
-        int permissionCheck = ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO);
-
-        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
-            callbackHandler.onError(new Error(Error.ERROR_AUDIO, "No RECORD_AUDIO permission. "));
-            return;
-        }
-
-        Logger.logD("startListening params: " + params);
-
-        machine = new AudioMachine.Builder()
-                .audioSource(MicAudioSource.new16kMicrophoneAudioSource())
-                .audioCodec(new RawCodec())
-                .audioProcessor(AudioProcessorFactory.createRemoteProcessor())
-                .addInterceptor(new AudioInterceptor() {
-                    @Override
-                    public void beforeEncode(byte[] buffer) {
-                        Logger.logD("new buffer received: " + buffer.length);
-                        callbackHandler.onBufferReceived(buffer);
-                    }
-
-                    @Override
-                    public void afterEncode(byte[] buffer) {
-
-                    }
-                }).build();
-        machine.start(new AudioMachine.EventListener() {
+        machineEventListener = new AudioMachine.EventListener() {
             @Override
             public void didStartWorking() {
                 callbackHandler.onReadyForSpeech();
@@ -114,7 +74,54 @@ public class SpeechRecognizer {
             public void didStopWorking() {
                 callbackHandler.onFinish();
             }
-        });
+        };
+        interceptor = new AudioInterceptor() {
+            @Override
+            public void beforeEncode(byte[] buffer) {
+                Logger.logD("new buffer received: " + buffer.length);
+                callbackHandler.onBufferReceived(buffer);
+            }
+
+            @Override
+            public void afterEncode(byte[] buffer) {
+
+            }
+        };
+    }
+
+    /**
+     * 设置语音识别监听器
+     *
+     * @param listener 监听器
+     */
+    public void setRecognitionListener(RecognitionListener listener) {
+        callbackHandler.setRecognitionListener(listener);
+    }
+
+    /**
+     * 开始监听语音输入
+     *
+     * @param params 识别参数
+     */
+    public void startListening(Map<String, Object> params) {
+        int permissionCheck = ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO);
+
+        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+            callbackHandler.onError(new Error(Error.ERROR_AUDIO, "No RECORD_AUDIO permission. "));
+            return;
+        }
+
+        Logger.logD("startListening params: " + params);
+
+        machine = new AudioMachine.Builder()
+                .audioSource(MicAudioSource.getAudioSource(params))
+                .audioCodec(AudioCodecFactory.createAudioCodec(params))
+                .audioProcessor(AudioProcessorFactory.createRemoteProcessor(params))
+                .addInterceptor(interceptor).build();
+
+        Logger.logD(machine.selfIntroduction());
+
+        machine.start(machineEventListener);
     }
 
     /**

@@ -24,7 +24,6 @@ public class AudioProcessorImpl implements AudioProcessor {
 
     private ComposeThread composeThread;
     private AudioProcessorDelegate delegate;
-    private int packageSize;
 
     private AudioBuffer audioBuffer;
     private final ConcurrentLinkedQueue<RawResult> results = new ConcurrentLinkedQueue<>();
@@ -36,9 +35,15 @@ public class AudioProcessorImpl implements AudioProcessor {
     private boolean isProcessFinished;
 
     AudioProcessorImpl(AudioProcessorDelegate delegate) {
-        executorService = Executors.newFixedThreadPool(1, sThreadFactory);
         this.delegate = delegate;
-        packageSize = delegate.packageSize();
+        executorService = Executors.newFixedThreadPool(delegate.threadCount(), sThreadFactory);
+    }
+
+    @Override
+    public String selfIntroduction() {
+        return delegate.getClass().getSimpleName() +
+                ", packageSize: " + delegate.packageSize() +
+                ", threadCount: " + delegate.threadCount();
     }
 
     @Override
@@ -76,6 +81,7 @@ public class AudioProcessorImpl implements AudioProcessor {
 
             int index = 0;
             int audioTotalLen = 0;
+            int packageSize = delegate.packageSize();
 
             while (!isCanceled) {
                 byte[] dataPack = new byte[packageSize];

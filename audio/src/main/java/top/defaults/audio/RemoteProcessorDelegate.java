@@ -4,6 +4,10 @@ import java.util.Locale;
 import java.util.concurrent.Callable;
 
 public class RemoteProcessorDelegate implements AudioProcessorDelegate {
+
+    private int packageSize = Constants.DEFAULT_PROCESSOR_PACKAGE_SIZE;
+    private int threadCount = Constants.DEFAULT_PROCESSOR_THREAD_COUNT;
+
     @Override
     public void initialize() {}
 
@@ -22,6 +26,19 @@ public class RemoteProcessorDelegate implements AudioProcessorDelegate {
 
     @Override
     public int packageSize() {
-        return 4000;
+        return packageSize;
+    }
+
+    public void setPackageSize(int packageSize) {
+        this.packageSize = packageSize;
+    }
+
+    @Override
+    public int threadCount() {
+        return threadCount;
+    }
+
+    public void setThreadCount(int threadCount) {
+        this.threadCount = threadCount;
     }
 }

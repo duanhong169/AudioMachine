@@ -1,6 +1,7 @@
 package top.defaults.audio;
 
 import java.util.Locale;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -62,5 +63,47 @@ class Utils {
             return false;
         }
         return true;
+    }
+
+    static boolean getBoolean(Map<String, Object> params, String key, boolean defaultValue) {
+        boolean value = defaultValue;
+        if (params == null) {
+            return value;
+        }
+
+        Object valueObject = params.get(key);
+        if (valueObject instanceof Boolean) {
+            value = (Boolean) valueObject;
+        }
+        return value;
+    }
+
+    static int getInt(Map<String, Object> params, String key, int defaultValue) {
+        int value = defaultValue;
+        if (params == null) {
+            return value;
+        }
+
+        Object valueObject = params.get(key);
+        if (valueObject instanceof Integer) {
+            value = (Integer) valueObject;
+        }
+        return value;
+    }
+
+    static String getString(Map<String, Object> params, String key, String defaultValue) {
+        String value = defaultValue;
+        if (params == null) {
+            return value;
+        }
+
+        Object valueObject = params.get(key);
+        if (valueObject instanceof String) {
+            value = (String) valueObject;
+            if (value.length() == 0) {
+                value = defaultValue;
+            }
+        }
+        return value;
     }
 }

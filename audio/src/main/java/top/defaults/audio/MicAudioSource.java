@@ -5,6 +5,7 @@ import android.media.AudioRecord;
 import android.media.MediaRecorder;
 
 import java.io.IOException;
+import java.util.Map;
 
 class MicAudioSource implements AudioSource, Runnable {
     private AudioRecord audioRecord;
@@ -20,11 +21,15 @@ class MicAudioSource implements AudioSource, Runnable {
         this.sampleRate = sampleRate;
     }
 
-    public static MicAudioSource new16kMicrophoneAudioSource() {
+    public static MicAudioSource getAudioSource(Map<String, Object> params) {
+        return new16kMicrophoneAudioSource();
+    }
+
+    private static MicAudioSource new16kMicrophoneAudioSource() {
         return new MicAudioSource(16000);
     }
 
-    public static MicAudioSource new8kMicrophoneAudioSource() {
+    private static MicAudioSource new8kMicrophoneAudioSource() {
         return new MicAudioSource(8000);
     }
 

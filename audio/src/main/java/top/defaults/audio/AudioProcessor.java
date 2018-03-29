@@ -14,4 +14,5 @@ interface AudioProcessor {
 
     void release();
 
+    String selfIntroduction();
 }
