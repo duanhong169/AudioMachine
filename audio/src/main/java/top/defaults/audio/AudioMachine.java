@@ -13,13 +13,9 @@ class AudioMachine {
     private AudioSource audioSource;
     private AudioCodec audioCodec;
     private AudioProcessor audioProcessor;
-
     private List<AudioInterceptor> audioInterceptors;
-
     private AudioCollectThread audioCollectThread;
-
     private EventListener eventListener;
-
     private boolean isCanceled;
     private boolean isInputFinished;
 
@@ -81,7 +77,9 @@ class AudioMachine {
                     audioTotalLen += frameSizeInByte;
                     Logger.logV("read len: " + frameSizeInByte);
                     for (AudioInterceptor interceptor: audioInterceptors) {
-                        interceptor.beforeEncode(buffer);
+                        if (interceptor.interceptPoint() == AudioInterceptor.POINT_BEFORE_ENCODE) {
+                            interceptor.onAudio(buffer, false);
+                        }
                     }
 
                     if (audioCodec != null) {
@@ -92,7 +90,9 @@ class AudioMachine {
                         Logger.logV("encoded len: " + encodedLen);
 
                         for (AudioInterceptor interceptor: audioInterceptors) {
-                            interceptor.afterEncode(encodedBuffer);
+                            if (interceptor.interceptPoint() == AudioInterceptor.POINT_AFTER_ENCODE) {
+                                interceptor.onAudio(buffer, false);
+                            }
                         }
 
                         audioProcessor.appendData(encodedBuffer, 0, encodedLen, false);
@@ -108,6 +108,9 @@ class AudioMachine {
                 e.printStackTrace();
                 onErrorDelegate(Utils.errorFromThrowable(e));
             } finally {
+                for (AudioInterceptor interceptor: audioInterceptors) {
+                    interceptor.onAudio(null, true);
+                }
                 audioProcessor.appendData(null, 0, 0, true);
                 audioCodec.close();
                 try {

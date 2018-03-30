@@ -2,6 +2,7 @@ package top.defaults.audioapp;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
@@ -43,13 +44,18 @@ public class MainActivity extends AppCompatActivity {
 
         rxPermissions = new RxPermissions(this);
         RxView.clicks(findViewById(R.id.start))
-                .compose(rxPermissions.ensure(Manifest.permission.RECORD_AUDIO))
+                .compose(rxPermissions.ensure(Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE))
                 .subscribe(granted -> {
                     if (granted) {
                         speechRecognizer = new SpeechRecognizer(this);
                         speechRecognizer.setRecognitionListener(new SpeechRecognizer.RecognitionListener() {
                             @Override
                             public void onReadyForSpeech() {
+
+                            }
+
+                            @Override
+                            public void onBeginningOfSpeech() {
 
                             }
 
@@ -85,6 +91,15 @@ public class MainActivity extends AppCompatActivity {
                             }
 
                             @Override
+                            public void onEvent(int eventType, Bundle params) {
+                                if (eventType == Keys.EVENT_TYPE_RAW_AUDIO_SAVED) {
+                                    Timber.d("File name: %s, length: %d",
+                                            params.getString(Keys.SAVE_RAW_AUDIO_PATH),
+                                            params.getInt(Keys.SAVE_RAW_AUDIO_LENGTH));
+                                }
+                            }
+
+                            @Override
                             public void onFinish() {
 
                             }
@@ -92,6 +107,7 @@ public class MainActivity extends AppCompatActivity {
                         Map<String, Object> params = new HashMap<>(10);
                         params.put(Keys.PACKAGE_SIZE, 4000);
                         params.put(Keys.THREAD_COUNT, 5);
+                        params.put(Keys.SAVE_RAW_AUDIO_PATH, Environment.getExternalStorageDirectory().getPath() + "/0/dev/1.pcm");
                         speechRecognizer.startListening(params);
                     }
                 });

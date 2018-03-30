@@ -1,8 +1,20 @@
 package top.defaults.audio;
 
-public interface AudioInterceptor {
+interface AudioInterceptor<T> {
 
-    void beforeEncode(byte[] buffer);
+    int POINT_BEFORE_ENCODE = 0;
 
-    void afterEncode(byte[] buffer);
+    int POINT_AFTER_ENCODE = 1;
+
+    int interceptPoint();
+
+    void onAudio(byte[] buffer, boolean end);
+
+    void registerCallback(InterceptResultCallback<T> callback);
+
+    interface InterceptResultCallback<T> {
+
+        void onInterceptResult(T result);
+    }
+
 }

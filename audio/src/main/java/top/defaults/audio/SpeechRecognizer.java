@@ -75,15 +75,21 @@ public class SpeechRecognizer {
                 callbackHandler.onFinish();
             }
         };
-        interceptor = new AudioInterceptor() {
+        interceptor = new AudioInterceptor<Void>() {
+
             @Override
-            public void beforeEncode(byte[] buffer) {
-                Logger.logD("new buffer received: " + buffer.length);
+            public int interceptPoint() {
+                return POINT_BEFORE_ENCODE;
+            }
+
+            @Override
+            public void onAudio(byte[] buffer, boolean end) {
+                Logger.logD("new buffer received: " + (buffer == null ? 0 : buffer.length));
                 callbackHandler.onBufferReceived(buffer);
             }
 
             @Override
-            public void afterEncode(byte[] buffer) {
+            public void registerCallback(InterceptResultCallback<Void> listener) {
 
             }
         };
@@ -113,14 +119,33 @@ public class SpeechRecognizer {
 
         Logger.logD("startListening params: " + params);
 
-        machine = new AudioMachine.Builder()
+        AudioMachine.Builder machineBuilder = new AudioMachine.Builder()
                 .audioSource(MicAudioSource.getAudioSource(params))
                 .audioCodec(AudioCodecFactory.createAudioCodec(params))
                 .audioProcessor(AudioProcessorFactory.createRemoteProcessor(params))
-                .addInterceptor(interceptor).build();
+                .addInterceptor(interceptor);
 
+        String saveRawAudioPath = Utils.getString(params, Keys.SAVE_RAW_AUDIO_PATH, null);
+        if (saveRawAudioPath != null) {
+            permissionCheck = ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+            if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+                callbackHandler.onError(new Error(Error.ERROR_AUDIO, "No WRITE_EXTERNAL_STORAGE permission. "));
+                return;
+            }
+
+            SaveRawAudioToFileInterceptor interceptor = new SaveRawAudioToFileInterceptor(saveRawAudioPath);
+            interceptor.registerCallback(new AudioInterceptor.InterceptResultCallback<Bundle>() {
+                @Override
+                public void onInterceptResult(Bundle result) {
+                    callbackHandler.onEvent(Keys.EVENT_TYPE_RAW_AUDIO_SAVED, result);
+                }
+            });
+            machineBuilder.addInterceptor(interceptor);
+        }
+
+        machine = machineBuilder.build();
         Logger.logD(machine.selfIntroduction());
-
         machine.start(machineEventListener);
     }
 
@@ -165,7 +190,7 @@ public class SpeechRecognizer {
                     recognitionListener.onReadyForSpeech();
                     break;
                 case CALLBACK_ON_BEGINNING_OF_SPEECH:
-//                    recognitionListener.onBeginningOfSpeech();
+                    recognitionListener.onBeginningOfSpeech();
                     break;
                 case CALLBACK_ON_RMS_CHANGED:
                     recognitionListener.onRmsChanged((Float) msg.obj);
@@ -188,13 +213,12 @@ public class SpeechRecognizer {
                     recognitionListener.onPartialResults((Results) msg.obj);
                     break;
                 case CALLBACK_ON_EVENT:
-//                    recognitionListener.onEvent(msg.arg1, (Bundle) msg.obj);
+                    recognitionListener.onEvent(msg.arg1, (Bundle) msg.obj);
                     break;
                 case CALLBACK_ON_FINISH:
                     recognitionListener.onFinish();
                     break;
                 default:
-//                    recognitionListener.onEvent(msg.arg1, (Bundle) msg.obj);
                     break;
             }
         }
@@ -279,6 +303,11 @@ public class SpeechRecognizer {
         void onReadyForSpeech();
 
         /**
+         * 检测到用户开始说话
+         */
+        void onBeginningOfSpeech();
+
+        /**
          * 检测到音量发生变化
          *
          * @param rmsdB 分贝值，范围[0.0, 1.0]
@@ -317,6 +346,14 @@ public class SpeechRecognizer {
          * @param error 错误对象
          */
         void onError(Error error);
+
+        /**
+         * 可扩展事件
+         *
+         * @param eventType 事件类型
+         * @param params 事件携带的参数
+         */
+        void onEvent(int eventType, Bundle params);
 
         /**
          * 识别结束，一定会回调
