@@ -149,6 +149,7 @@ class AudioMachine {
                         if (eventListener != null) {
                             eventListener.onResult(rawResult);
                         }
+                        finishInput();
                         break;
                     } else {
                         if (eventListener != null) {
