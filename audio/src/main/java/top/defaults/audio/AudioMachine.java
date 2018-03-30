@@ -32,14 +32,14 @@ class AudioMachine {
 
     String selfIntroduction() {
         return "AudioMachine >>>>>>" +
-                "\n------------------------ AudioMachine -----------------------\n" +
+                "\n>>>>>>>>>>>>>>>>>>>>>>>> AudioMachine -----------------------\n" +
                 "AudioSource: " + audioSource.getClass().getSimpleName() +
                 ", sampleRate: " + audioSource.getSampleRate() +
                 "\n" +
                 "AudioCodec: " + audioCodec.getClass().getSimpleName() +
                 "\n" +
                 "AudioProcessor: " +  audioProcessor.selfIntroduction() +
-                "\n----------------------- AudioMachine ------------------------";
+                "\n------------------------ AudioMachine <<<<<<<<<<<<<<<<<<<<<<<";
     }
 
     void start(EventListener eventListener) {
@@ -54,7 +54,7 @@ class AudioMachine {
     private class AudioCollectThread extends Thread {
         @Override
         public void run() {
-            Logger.logD("-------- " + this.getClass() + " start running --------");
+            Logger.logThreadStart();
 
             try {
                 audioSource.open();
@@ -122,14 +122,14 @@ class AudioMachine {
                 }
             }
 
-            Logger.logD("-------- " + this.getClass() + " finished running --------");
+            Logger.logThreadFinish();
         }
     }
 
     private class AudioProcessThread extends Thread {
         @Override
         public void run() {
-            Logger.logD("-------- " + this.getClass() + " start running --------");
+            Logger.logThreadStart();
 
             try {
                 while (!isCanceled) {
@@ -172,7 +172,7 @@ class AudioMachine {
                 eventListener.didStopWorking();
             }
 
-            Logger.logD("-------- " + this.getClass() + " finished running --------");
+            Logger.logThreadFinish();
         }
     }
 

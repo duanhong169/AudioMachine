@@ -8,17 +8,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-/**
- * 日志类
- *
- * @author fosafer
- * @since Nov 1, 2014
- */
 @SuppressWarnings({"WeakerAccess", "unused"})
 @SuppressLint("LogNotTimber")
 public class Logger {
 
-    private static final String DEFAULT_LOG_TAG = "AWLogger";
+    private static final String DEFAULT_LOG_TAG = "AudioLogger";
     private static String logTag = DEFAULT_LOG_TAG;
     private static int logLevel = Log.VERBOSE;
     private static String logFilePath = null;
@@ -31,7 +25,7 @@ public class Logger {
      * 
      * @param logLevel 日志级别
      */
-    public static void setLogLevel(int logLevel) {
+    static void setLogLevel(int logLevel) {
         Logger.logLevel = logLevel;
     }
 
@@ -39,7 +33,7 @@ public class Logger {
         return logLevel;
     }
 
-    public static void setLogTag(String newLogTag) {
+    static void setLogTag(String newLogTag) {
         logTag = newLogTag;
     }
 
@@ -48,7 +42,7 @@ public class Logger {
      * 
      * @param filePath 文件路径
      */
-    public static void setLogFile(String filePath) {
+    static void setLogFile(String filePath) {
         logFilePath = filePath;
     }
     
@@ -57,63 +51,71 @@ public class Logger {
      * 
      * @param sizeInMegabyte 日志文件大小
      */
-    public static void setLogFileMaxSizeInMegabyte(int sizeInMegabyte) {
+    static void setLogFileMaxSizeInMegabyte(int sizeInMegabyte) {
         logFileSizeInMegabytes = sizeInMegabyte;
     }
     
-    public static void logV(String logMessage) {
+    static void logV(String logMessage) {
         logV(logTag + "|" + getLineInfo(), logMessage);
     }
 
-    public static void logD(String logMessage) {
+    static void logD(String logMessage) {
         logD(logTag + "|" + getLineInfo(), logMessage);
     }
 
-    public static void logI(String logMessage) {
+    static void logI(String logMessage) {
         logI(logTag + "|" + getLineInfo(), logMessage);
     }
 
-    public static void logW(String logMessage) {
+    static void logW(String logMessage) {
         logW(logTag + "|" + getLineInfo(), logMessage);
     }
 
-    public static void logE(String logMessage) {
+    static void logE(String logMessage) {
         logE(logTag + "|" + getLineInfo(), logMessage);
     }
 
-    public static void logV(String tag, String logMessage) {
+    static void logV(String tag, String logMessage) {
         if (logLevel > Log.VERBOSE && !Log.isLoggable(logTag, Log.DEBUG))
             return;
         Log.v(tag, logMessage);
         writeLogFile(tag + "\t" + logMessage);
     }
 
-    public static void logD(String tag, String logMessage) {
+    static void logD(String tag, String logMessage) {
         if (logLevel > Log.DEBUG && !Log.isLoggable(logTag, Log.DEBUG))
             return;
         Log.d(tag, logMessage);
         writeLogFile(tag + "\t" + logMessage);
     }
 
-    public static void logI(String tag, String logMessage) {
+    static void logI(String tag, String logMessage) {
         if (logLevel > Log.INFO && !Log.isLoggable(logTag, Log.DEBUG))
             return;
         Log.i(tag, logMessage);
         writeLogFile(tag + "\t" + logMessage);
     }
 
-    public static void logW(String tag, String logMessage) {
+    static void logW(String tag, String logMessage) {
         if (logLevel > Log.WARN && !Log.isLoggable(logTag, Log.DEBUG))
             return;
         Log.w(tag, logMessage);
         writeLogFile(tag + "\t" + logMessage);
     }
 
-    public static void logE(String tag, String logMessage) {
+    static void logE(String tag, String logMessage) {
         if (logLevel > Log.ERROR && !Log.isLoggable(logTag, Log.DEBUG))
             return;
         Log.e(tag, logMessage);
         writeLogFile(tag + "\t" + logMessage);
+    }
+
+    static void logThreadStart() {
+        logD(logTag + "|" + getLineInfo(1), ">>>>>>>> " + Thread.currentThread().getClass() + " start running >>>>>>>>");
+    }
+
+    static void logThreadFinish() {
+        logD(logTag + "|" + getLineInfo(1), "<<<<<<<< " + Thread.currentThread().getClass() + " finished running <<<<<<<<");
     }
 
     private static void writeLogFile(String logMessage) {
@@ -143,11 +145,15 @@ public class Logger {
     }
     
     private static String getLineInfo() {
+        return getLineInfo(0);
+    }
+
+    private static String getLineInfo(int offset) {
         StackTraceElement[] stackTraceElement = Thread.currentThread()
                 .getStackTrace();
 
-        String fileName = stackTraceElement[4].getFileName();
-        int lineNumber = stackTraceElement[4].getLineNumber();
+        String fileName = stackTraceElement[5 - offset].getFileName();
+        int lineNumber = stackTraceElement[5 - offset].getLineNumber();
         return fileName + ":" + lineNumber;
     }
 }

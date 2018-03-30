@@ -77,7 +77,7 @@ public class AudioProcessorImpl implements AudioProcessor {
     private class ComposeThread extends Thread {
         @Override
         public void run() {
-            Logger.logD("-------- " + this.getClass() + " start running --------");
+            Logger.logThreadStart();
 
             int index = 0;
             int audioTotalLen = 0;
@@ -117,14 +117,14 @@ public class AudioProcessorImpl implements AudioProcessor {
                     break;
                 }
             }
-            Logger.logD("-------- " + this.getClass() + " finished running --------");
+            Logger.logThreadFinish();
         }
     }
 
     private class FetchResultThread extends Thread {
         @Override
         public void run() {
-            Logger.logD("-------- " + this.getClass() + " start running --------");
+            Logger.logThreadStart();
 
             while (!isCanceled) {
                 final Future<RawResult> future = futures.peek();
@@ -169,7 +169,7 @@ public class AudioProcessorImpl implements AudioProcessor {
                 }
             }
             isStopped = true;
-            Logger.logD("-------- " + this.getClass() + " finished running --------");
+            Logger.logThreadFinish();
         }
     }
 
