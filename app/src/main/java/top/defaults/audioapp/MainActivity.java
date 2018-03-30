@@ -26,12 +26,17 @@ public class MainActivity extends AppCompatActivity {
     SpeechRecognizer speechRecognizer;
     RxPermissions rxPermissions;
 
+    @BindView(R.id.result) TextView result;
     @OnClick(R.id.stop) void stop() {
         if (speechRecognizer != null) {
             speechRecognizer.stopListening();
         }
     }
-    @BindView(R.id.result) TextView result;
+    @OnClick(R.id.cancel) void cancel() {
+        if (speechRecognizer != null) {
+            speechRecognizer.cancel();
+        }
+    }
 
     @SuppressLint("CheckResult")
     @Override
@@ -47,6 +52,9 @@ public class MainActivity extends AppCompatActivity {
                 .compose(rxPermissions.ensure(Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE))
                 .subscribe(granted -> {
                     if (granted) {
+                        if (speechRecognizer != null) {
+                            speechRecognizer.cancel();
+                        }
                         speechRecognizer = new SpeechRecognizer(this);
                         speechRecognizer.setRecognitionListener(new SpeechRecognizer.RecognitionListener() {
                             @Override
@@ -104,6 +112,7 @@ public class MainActivity extends AppCompatActivity {
 
                             }
                         });
+
                         Map<String, Object> params = new HashMap<>(10);
                         params.put(Keys.PACKAGE_SIZE, 4000);
                         params.put(Keys.THREAD_COUNT, 5);

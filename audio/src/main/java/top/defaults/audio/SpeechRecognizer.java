@@ -95,20 +95,10 @@ public class SpeechRecognizer {
         };
     }
 
-    /**
-     * 设置语音识别监听器
-     *
-     * @param listener 监听器
-     */
     public void setRecognitionListener(RecognitionListener listener) {
         callbackHandler.setRecognitionListener(listener);
     }
 
-    /**
-     * 开始监听语音输入
-     *
-     * @param params 识别参数
-     */
     public void startListening(Map<String, Object> params) {
         int permissionCheck = ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO);
 
@@ -149,16 +139,10 @@ public class SpeechRecognizer {
         machine.start(machineEventListener);
     }
 
-    /**
-     * 停止监听语音输入
-     */
     public void stopListening() {
         machine.finishInput();
     }
 
-    /**
-     * 取消本次识别
-     */
     public void cancel() {
         machine.cancel();
     }
@@ -179,9 +163,12 @@ public class SpeechRecognizer {
 
         @Override
         public void handleMessage(Message msg) {
-            // CALLBACK_ON_END_OF_SPEECH通知录音机释放
-            if ((done && msg.what != CALLBACK_ON_END_OF_SPEECH  && msg.what != CALLBACK_ON_FINISH)
-                    || recognitionListener == null) {
+            if (recognitionListener == null) {
+                return;
+            }
+            // 过滤无意义的消息
+            if (done && msg.what != CALLBACK_ON_END_OF_SPEECH  && msg.what != CALLBACK_ON_FINISH
+                    && msg.what != CALLBACK_ON_EVENT) {
                 return;
             }
             Logger.logD("handleMessage: " + msg.what);
@@ -269,95 +256,37 @@ public class SpeechRecognizer {
 
         @IntDef({ ResultsType.RESULTS_TYPE_PARTIAL, ResultsType.RESULTS_TYPE_FULL })
         public @interface ResultsType {
-            /**
-             * 中间结果
-             */
             int RESULTS_TYPE_PARTIAL = 0;
-            /**
-             * 最终结果
-             */
             int RESULTS_TYPE_FULL = 1;
         }
 
-        /**
-         * 结果类型
-         */
         public @ResultsType int type;
 
-        /**
-         * 原始JSON数据
-         */
         public String rawJSONString;
 
-        /**
-         * 解析后的JSON对象
-         */
         public JSONObject parsedResults;
     }
 
     public interface RecognitionListener {
 
-        /**
-         * 录音设备就绪，可以提示用户开始说话
-         */
         void onReadyForSpeech();
 
-        /**
-         * 检测到用户开始说话
-         */
         void onBeginningOfSpeech();
 
-        /**
-         * 检测到音量发生变化
-         *
-         * @param rmsdB 分贝值，范围[0.0, 1.0]
-         */
         void onRmsChanged(float rmsdB);
 
-        /**
-         * 录音设备返回了新的语音数据
-         *
-         * @param buffer 语音数据
-         */
         void onBufferReceived(byte[] buffer);
 
-        /**
-         * 录音已结束
-         */
         void onEndOfSpeech();
 
-        /**
-         * 识别器返回中间结果
-         *
-         * @param results 中间结果
-         */
         void onPartialResults(Results results);
 
-        /**
-         * 识别器返回最终结果
-         *
-         * @param results 最终结果
-         */
         void onResults(Results results);
 
-        /**
-         * 识别过程出错
-         *
-         * @param error 错误对象
-         */
         void onError(Error error);
 
-        /**
-         * 可扩展事件
-         *
-         * @param eventType 事件类型
-         * @param params 事件携带的参数
-         */
         void onEvent(int eventType, Bundle params);
 
-        /**
-         * 识别结束，一定会回调
-         */
         void onFinish();
     }
 }

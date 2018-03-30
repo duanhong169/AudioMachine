@@ -195,7 +195,7 @@ class AudioMachine {
         if (isCanceled) {
             return;
         }
-        isCanceled = true;
+        cancel();
         Logger.logD("-------- onErrorDelegate() --------");
 
         if (eventListener != null) {

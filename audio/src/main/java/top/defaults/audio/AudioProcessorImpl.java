@@ -37,6 +37,7 @@ public class AudioProcessorImpl implements AudioProcessor {
     AudioProcessorImpl(AudioProcessorDelegate delegate) {
         this.delegate = delegate;
         executorService = Executors.newFixedThreadPool(delegate.threadCount(), sThreadFactory);
+        audioBuffer = AudioBufferFactory.createAudioBuffer(OkioBuffer.class);
     }
 
     @Override
@@ -53,7 +54,6 @@ public class AudioProcessorImpl implements AudioProcessor {
         } else {
             return;
         }
-        audioBuffer = AudioBufferFactory.createAudioBuffer(OkioBuffer.class);
         delegate.initialize();
         composeThread = new ComposeThread();
         composeThread.start();
@@ -198,7 +198,7 @@ public class AudioProcessorImpl implements AudioProcessor {
 
     @Override
     public boolean isStopped() {
-        return isStopped;
+        return isStopped || isCanceled;
     }
 
     @Override

@@ -2,5 +2,6 @@
     <string name="app_name">AudioApp</string>
     <string name="start">Start</string>
     <string name="stop">Stop</string>
+    <string name="cancel">Cancel</string>
     <string name="result">Result</string>
 </resources>
