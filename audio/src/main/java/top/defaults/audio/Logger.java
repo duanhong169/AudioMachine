@@ -12,9 +12,9 @@ import java.util.Locale;
 @SuppressLint("LogNotTimber")
 public class Logger {
 
-    private static final String DEFAULT_LOG_TAG = "AudioLogger";
-    private static String logTag = DEFAULT_LOG_TAG;
-    private static int logLevel = Log.VERBOSE;
+    private static final String DEFAULT_TAG = "TopDefaultsLogger";
+    private static String tag = DEFAULT_TAG;
+    private static int level = Log.VERBOSE;
     private static String logFilePath = null;
     private static int logFileSizeInMegabytes = 2;
     private static final String logBrotherSuffix = "_1";
@@ -23,18 +23,18 @@ public class Logger {
     /**
      * 设置日志级别
      * 
-     * @param logLevel 日志级别
+     * @param level 日志级别
      */
-    static void setLogLevel(int logLevel) {
-        Logger.logLevel = logLevel;
+    static void setLevel(int level) {
+        Logger.level = level;
     }
 
-    public static int getLogLevel() {
-        return logLevel;
+    public static int getLevel() {
+        return level;
     }
 
-    static void setLogTag(String newLogTag) {
-        logTag = newLogTag;
+    static void setTag(String newTag) {
+        tag = newTag;
     }
 
     /**
@@ -55,67 +55,67 @@ public class Logger {
         logFileSizeInMegabytes = sizeInMegabyte;
     }
     
-    static void logV(String logMessage) {
-        logV(logTag + "|" + getLineInfo(), logMessage);
+    static void v(String logMessage) {
+        v(tag + "|" + getLineInfo(), logMessage);
     }
 
-    static void logD(String logMessage) {
-        logD(logTag + "|" + getLineInfo(), logMessage);
+    static void d(String logMessage) {
+        d(tag + "|" + getLineInfo(), logMessage);
     }
 
-    static void logI(String logMessage) {
-        logI(logTag + "|" + getLineInfo(), logMessage);
+    static void i(String logMessage) {
+        i(tag + "|" + getLineInfo(), logMessage);
     }
 
-    static void logW(String logMessage) {
-        logW(logTag + "|" + getLineInfo(), logMessage);
+    static void w(String logMessage) {
+        w(tag + "|" + getLineInfo(), logMessage);
     }
 
-    static void logE(String logMessage) {
-        logE(logTag + "|" + getLineInfo(), logMessage);
+    static void e(String logMessage) {
+        e(tag + "|" + getLineInfo(), logMessage);
     }
 
-    static void logV(String tag, String logMessage) {
-        if (logLevel > Log.VERBOSE && !Log.isLoggable(logTag, Log.DEBUG))
+    static void v(String tag, String logMessage) {
+        if (level > Log.VERBOSE && !Log.isLoggable(Logger.tag, Log.DEBUG))
             return;
         Log.v(tag, logMessage);
         writeLogFile(tag + "\t" + logMessage);
     }
 
-    static void logD(String tag, String logMessage) {
-        if (logLevel > Log.DEBUG && !Log.isLoggable(logTag, Log.DEBUG))
+    static void d(String tag, String logMessage) {
+        if (level > Log.DEBUG && !Log.isLoggable(Logger.tag, Log.DEBUG))
             return;
         Log.d(tag, logMessage);
         writeLogFile(tag + "\t" + logMessage);
     }
 
-    static void logI(String tag, String logMessage) {
-        if (logLevel > Log.INFO && !Log.isLoggable(logTag, Log.DEBUG))
+    static void i(String tag, String logMessage) {
+        if (level > Log.INFO && !Log.isLoggable(Logger.tag, Log.DEBUG))
             return;
         Log.i(tag, logMessage);
         writeLogFile(tag + "\t" + logMessage);
     }
 
-    static void logW(String tag, String logMessage) {
-        if (logLevel > Log.WARN && !Log.isLoggable(logTag, Log.DEBUG))
+    static void w(String tag, String logMessage) {
+        if (level > Log.WARN && !Log.isLoggable(Logger.tag, Log.DEBUG))
             return;
         Log.w(tag, logMessage);
         writeLogFile(tag + "\t" + logMessage);
     }
 
-    static void logE(String tag, String logMessage) {
-        if (logLevel > Log.ERROR && !Log.isLoggable(logTag, Log.DEBUG))
+    static void e(String tag, String logMessage) {
+        if (level > Log.ERROR && !Log.isLoggable(Logger.tag, Log.DEBUG))
             return;
         Log.e(tag, logMessage);
         writeLogFile(tag + "\t" + logMessage);
     }
 
     static void logThreadStart() {
-        logD(logTag + "|" + getLineInfo(1), ">>>>>>>> " + Thread.currentThread().getClass() + " start running >>>>>>>>");
+        d(tag + "|" + getLineInfo(1), ">>>>>>>> " + Thread.currentThread().getClass() + " start running >>>>>>>>");
     }
 
     static void logThreadFinish() {
-        logD(logTag + "|" + getLineInfo(1), "<<<<<<<< " + Thread.currentThread().getClass() + " finished running <<<<<<<<");
+        d(tag + "|" + getLineInfo(1), "<<<<<<<< " + Thread.currentThread().getClass() + " finished running <<<<<<<<");
     }
 
     private static void writeLogFile(String logMessage) {
@@ -154,6 +154,6 @@ public class Logger {
 
         String fileName = stackTraceElement[5 - offset].getFileName();
         int lineNumber = stackTraceElement[5 - offset].getLineNumber();
-        return fileName + ":" + lineNumber;
+        return ".(" + fileName + ":" + lineNumber + ")";
     }
 }

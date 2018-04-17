@@ -39,7 +39,7 @@ class AudioMachine {
     }
 
     void start(EventListener eventListener) {
-        Logger.logD("-------- start() --------");
+        Logger.d("-------- start() --------");
         this.eventListener = eventListener;
         audioCollectThread = new AudioCollectThread();
         audioCollectThread.start();
@@ -75,7 +75,7 @@ class AudioMachine {
                         throw new EOFException();
                     }
                     audioTotalLen += frameSizeInByte;
-                    Logger.logV("read len: " + frameSizeInByte);
+                    Logger.v("read len: " + frameSizeInByte);
                     for (AudioInterceptor interceptor: audioInterceptors) {
                         if (interceptor.interceptPoint() == AudioInterceptor.POINT_BEFORE_ENCODE) {
                             interceptor.onAudio(buffer, false);
@@ -87,7 +87,7 @@ class AudioMachine {
                         short[] shortBuffer = new short[frameSizeInShort];
                         ByteBuffer.wrap(buffer).order(ByteOrder.LITTLE_ENDIAN).asShortBuffer().get(shortBuffer);
                         int encodedLen = audioCodec.encode(shortBuffer, frameSizeInShort, encodedBuffer);
-                        Logger.logV("encoded len: " + encodedLen);
+                        Logger.v("encoded len: " + encodedLen);
 
                         for (AudioInterceptor interceptor: audioInterceptors) {
                             if (interceptor.interceptPoint() == AudioInterceptor.POINT_AFTER_ENCODE) {
@@ -101,9 +101,9 @@ class AudioMachine {
                     }
                 }
 
-                Logger.logD("recorded audio total length: " + audioTotalLen);
+                Logger.d("recorded audio total length: " + audioTotalLen);
             } catch (EOFException e) {
-                Logger.logD("discard last bytes (not enough for one frame to encode)");
+                Logger.d("discard last bytes (not enough for one frame to encode)");
             } catch (Exception e) {
                 e.printStackTrace();
                 onErrorDelegate(Utils.errorFromThrowable(e));
@@ -189,7 +189,7 @@ class AudioMachine {
         if (audioProcessor != null) {
             audioProcessor.cancel();
         }
-        Logger.logD("-------- cancel() --------");
+        Logger.d("-------- cancel() --------");
     }
 
     private void onErrorDelegate(Error error) {
@@ -197,7 +197,7 @@ class AudioMachine {
             return;
         }
         cancel();
-        Logger.logD("-------- onErrorDelegate() --------");
+        Logger.d("-------- onErrorDelegate() --------");
 
         if (eventListener != null) {
             eventListener.onError(error);

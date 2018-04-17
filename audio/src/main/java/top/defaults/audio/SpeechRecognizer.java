@@ -84,7 +84,7 @@ public class SpeechRecognizer {
 
             @Override
             public void onAudio(byte[] buffer, boolean end) {
-                Logger.logD("new buffer received: " + (buffer == null ? 0 : buffer.length));
+                Logger.d("new buffer received: " + (buffer == null ? 0 : buffer.length));
                 callbackHandler.onBufferReceived(buffer);
             }
 
@@ -107,7 +107,7 @@ public class SpeechRecognizer {
             return;
         }
 
-        Logger.logD("startListening params: " + params);
+        Logger.d("startListening params: " + params);
 
         AudioMachine.Builder machineBuilder = new AudioMachine.Builder()
                 .audioSource(MicAudioSource.getAudioSource(params))
@@ -135,7 +135,7 @@ public class SpeechRecognizer {
         }
 
         machine = machineBuilder.build();
-        Logger.logD(machine.selfIntroduction());
+        Logger.d(machine.selfIntroduction());
         machine.start(machineEventListener);
     }
 
@@ -171,7 +171,7 @@ public class SpeechRecognizer {
                     && msg.what != CALLBACK_ON_EVENT) {
                 return;
             }
-            Logger.logD("handleMessage: " + msg.what);
+            Logger.d("handleMessage: " + msg.what);
             switch (msg.what) {
                 case CALLBACK_ON_READY_FOR_SPEECH:
                     recognitionListener.onReadyForSpeech();

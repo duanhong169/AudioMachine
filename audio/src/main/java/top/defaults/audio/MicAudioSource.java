@@ -96,7 +96,7 @@ class MicAudioSource implements AudioSource, Runnable {
 
     @Override
     public void run() {
-        Logger.logD("recorder loop start");
+        Logger.d("recorder loop start");
         android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_AUDIO);
         while (!isStopped) {
             byte[] buffer = new byte[640];
@@ -110,7 +110,7 @@ class MicAudioSource implements AudioSource, Runnable {
         audioRecord.stop();
         audioRecord.release();
         audioRecord = null;
-        Logger.logD("recorder loop end");
+        Logger.d("recorder loop end");
     }
 
     @Override
