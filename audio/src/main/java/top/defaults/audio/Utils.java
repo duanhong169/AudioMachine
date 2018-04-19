@@ -106,4 +106,17 @@ class Utils {
         }
         return value;
     }
+
+    static <T> T getObject(Class<T> cls, Map<String, Object> params, String key) {
+        if (params == null) {
+            return null;
+        }
+
+        Object valueObject = params.get(key);
+        if (valueObject == null || !cls.isInstance(valueObject)) {
+            return null;
+        }
+
+        return cls.cast(valueObject);
+    }
 }

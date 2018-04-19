@@ -2,6 +2,8 @@ package top.defaults.audio;
 
 public class Keys {
 
+    public static final String AUDIO_PROCESSOR_DELEGATE = "audio.processor.delegate";
+
     public static final String THREAD_COUNT = "thread.count";
 
     public static final String PACKAGE_SIZE = "package.size";

@@ -109,10 +109,11 @@ public class SpeechRecognizer {
 
         Logger.d("startListening params: " + params);
 
+        AudioProcessorDelegate delegate = Utils.getObject(AudioProcessorDelegate.class, params, Keys.AUDIO_PROCESSOR_DELEGATE);
         AudioMachine.Builder machineBuilder = new AudioMachine.Builder()
                 .audioSource(MicAudioSource.getAudioSource(params))
                 .audioCodec(AudioCodecFactory.createAudioCodec(params))
-                .audioProcessor(AudioProcessorFactory.createRemoteProcessor(params))
+                .audioProcessor(AudioProcessorFactory.createAudioProcessor(delegate))
                 .addInterceptor(interceptor);
 
         String saveRawAudioPath = Utils.getString(params, Keys.SAVE_RAW_AUDIO_PATH, null);
