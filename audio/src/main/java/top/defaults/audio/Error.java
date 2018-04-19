@@ -25,16 +25,16 @@ public class Error extends java.lang.Error {
         String message;
         switch (code) {
             case ERROR_AUDIO:
-                message = "音频错误";
+                message = "Audio error";
                 break;
             case ERROR_NETWORK:
-                message = "网络错误";
+                message = "Network error";
                 break;
             case ERROR_CLIENT:
-                message = "客户端错误";
+                message = "Client error";
                 break;
             default:
-                message = "未定义错误";
+                message = "Undefined error";
                 break;
         }
         return message;

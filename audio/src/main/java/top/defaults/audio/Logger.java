@@ -19,12 +19,7 @@ public class Logger {
     private static int logFileSizeInMegabytes = 2;
     private static final String logBrotherSuffix = "_1";
     private static boolean isLoggingToBrother = false;
-    
-    /**
-     * 设置日志级别
-     * 
-     * @param level 日志级别
-     */
+
     static void setLevel(int level) {
         Logger.level = level;
     }
@@ -38,19 +33,16 @@ public class Logger {
     }
 
     /**
-     * 设置日志文件路径，为防止日志文件过大，内部采用两个文件来回写，另一个文件加上后缀"_1"
+     * Set the path for log file，we will keep at most two log files (one with the suffix "_1")
+     * and the file size will be limited at {@link #setLogFileMaxSizeInMegabyte(int)}, if one
+     * file exceed the limit, the following logs will be written to the other one.
      * 
-     * @param filePath 文件路径
+     * @param filePath Path for log file
      */
     static void setLogFile(String filePath) {
         logFilePath = filePath;
     }
-    
-    /**
-     * 设置日志文件最大尺寸，单位兆字节
-     * 
-     * @param sizeInMegabyte 日志文件大小
-     */
+
     static void setLogFileMaxSizeInMegabyte(int sizeInMegabyte) {
         logFileSizeInMegabytes = sizeInMegabyte;
     }
