@@ -38,6 +38,11 @@ public class MockProcessorDelegate implements AudioProcessorDelegate {
         return threadCount;
     }
 
+    @Override
+    public boolean exhausted() {
+        return false;
+    }
+
     public void setThreadCount(int threadCount) {
         this.threadCount = threadCount;
     }

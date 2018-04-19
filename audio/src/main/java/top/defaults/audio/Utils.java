@@ -44,6 +44,9 @@ class Utils {
     }
 
     static Error errorFromThrowable(Throwable throwable) {
+        if (throwable instanceof Error) {
+            return (Error) throwable;
+        }
         return errorFromThrowable(throwable, ERROR_DEFAULT_CODE);
     }
 

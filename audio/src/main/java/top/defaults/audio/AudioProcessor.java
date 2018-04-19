@@ -14,5 +14,12 @@ interface AudioProcessor {
 
     void release();
 
+    /**
+     * Will not accept more data if it's exhausted. The host {@link AudioMachine} should check
+     * this flag and stop calling {@link AudioProcessor#appendData(byte[], int, int, boolean)}
+     * if true is returned.
+     */
+    boolean exhausted();
+
     String selfIntroduction();
 }

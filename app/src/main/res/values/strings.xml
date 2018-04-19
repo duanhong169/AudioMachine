@@ -4,4 +4,5 @@
     <string name="stop">Stop</string>
     <string name="cancel">Cancel</string>
     <string name="result">Result</string>
+    <string name="pending_result">Pending result…</string>
 </resources>

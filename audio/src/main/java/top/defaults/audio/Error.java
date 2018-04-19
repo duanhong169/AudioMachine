@@ -5,6 +5,7 @@ import java.util.Locale;
 public class Error extends java.lang.Error {
     public static final int ERROR_DEFAULT_CODE = -1;
     public static final int ERROR_AUDIO = 3;
+    public static final int ERROR_NETWORK = 4;
     public static final int ERROR_CLIENT = 5;
     public static final int ERROR_AUDIO_MACHINE_BUSY = 8;
 
@@ -26,6 +27,12 @@ public class Error extends java.lang.Error {
             case ERROR_AUDIO:
                 message = "音频错误";
                 break;
+            case ERROR_NETWORK:
+                message = "网络错误";
+                break;
+            case ERROR_CLIENT:
+                message = "客户端错误";
+                break;
             default:
                 message = "未定义错误";
                 break;
@@ -35,6 +42,6 @@ public class Error extends java.lang.Error {
 
     @Override
     public String toString() {
-        return String.format(Locale.getDefault(), "%s(%d)", getMessage(), code);
+        return String.format(Locale.getDefault(), "#%d, %s", code, getMessage());
     }
 }

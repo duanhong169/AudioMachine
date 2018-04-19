@@ -66,7 +66,7 @@ class AudioMachine {
                 byte[] buffer = new byte[frameSizeInByte];
 
                 while (!isCanceled) {
-                    if (isInputFinished) {
+                    if (isInputFinished || audioProcessor.exhausted()) {
                         audioSource.close();
                     }
 

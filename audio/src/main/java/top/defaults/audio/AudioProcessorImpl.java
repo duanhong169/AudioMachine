@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 
 import java.io.IOException;
 import java.util.LinkedList;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -105,11 +106,14 @@ public class AudioProcessorImpl implements AudioProcessor {
                     break;
                 }
 
-                Future<RawResult> future = executorService.submit(delegate.compose(index, dataPack, readLen, end));
-                ++index;
-                futures.offer(future);
+                Callable<RawResult> callable = delegate.compose(index, dataPack, readLen, end);
+                if (callable != null) {
+                    Future<RawResult> future = executorService.submit(callable);
+                    ++index;
+                    futures.offer(future);
+                }
 
-                if (end || isProcessFinished) {
+                if (end || delegate.exhausted() || isProcessFinished) {
                     break;
                 }
 
@@ -204,6 +208,11 @@ public class AudioProcessorImpl implements AudioProcessor {
     @Override
     public void release() {
         delegate.release();
+    }
+
+    @Override
+    public boolean exhausted() {
+        return delegate.exhausted();
     }
 
 }

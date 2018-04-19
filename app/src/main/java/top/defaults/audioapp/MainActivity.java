@@ -6,6 +6,7 @@ import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.jakewharton.rxbinding2.view.RxView;
 import com.tbruyelle.rxpermissions2.RxPermissions;
@@ -79,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
 
                             @Override
                             public void onEndOfSpeech() {
-
+                                result.setText(R.string.pending_result);
                             }
 
                             @Override
@@ -96,6 +97,8 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onError(Error error) {
                                 Timber.e(error);
+                                result.setText(String.format("Error: %s", error));
+                                Toast.makeText(MainActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
                             }
 
                             @Override
@@ -117,8 +120,17 @@ public class MainActivity extends AppCompatActivity {
                         params.put(Keys.PACKAGE_SIZE, 4000);
                         params.put(Keys.THREAD_COUNT, 5);
                         params.put(Keys.SAVE_RAW_AUDIO_PATH, Environment.getExternalStorageDirectory().getPath() + "/0/dev/1.pcm");
+                        params.put(Keys.AUDIO_PROCESSOR_DELEGATE, new XunfeiAPDelegate());
                         speechRecognizer.startListening(params);
                     }
                 });
+    }
+
+    @Override
+    protected void onPause() {
+        if (speechRecognizer != null) {
+            speechRecognizer.cancel();
+        }
+        super.onPause();
     }
 }

@@ -5,7 +5,7 @@ public class RawResult {
     public int index;
     public boolean end;
 
-    RawResult(String string, int index, boolean end) {
+    public RawResult(String string, int index, boolean end) {
         this.string = string;
         this.index = index;
         this.end = end;
