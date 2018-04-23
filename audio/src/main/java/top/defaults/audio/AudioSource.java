@@ -15,4 +15,6 @@ public interface AudioSource {
     int read(byte[] buffer, int byteOffset, int byteCount) throws IOException;
 
     void close() throws IOException;
+
+    void setAudioVolumeListener(AudioVolumeListener listener);
 }

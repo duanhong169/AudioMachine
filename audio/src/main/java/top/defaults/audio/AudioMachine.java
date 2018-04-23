@@ -38,9 +38,16 @@ class AudioMachine {
                 "\n------------------------ AudioMachine <<<<<<<<<<<<<<<<<<<<<<<";
     }
 
-    void start(EventListener eventListener) {
+    void start(final EventListener eventListener) {
         Logger.d("-------- start() --------");
         this.eventListener = eventListener;
+        this.audioSource.setAudioVolumeListener(new AudioVolumeListener() {
+            @Override
+            public void onRmsChanged(float rmsdB) {
+                eventListener.onRmsChanged(rmsdB);
+            }
+        });
+
         audioCollectThread = new AudioCollectThread();
         audioCollectThread.start();
         AudioProcessThread audioProcessThread = new AudioProcessThread();
@@ -243,7 +250,7 @@ class AudioMachine {
         }
     }
 
-    interface EventListener {
+    interface EventListener extends AudioVolumeListener {
 
         void didStartWorking();
 

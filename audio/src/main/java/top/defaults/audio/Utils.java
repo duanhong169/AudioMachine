@@ -1,5 +1,7 @@
 package top.defaults.audio;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -121,5 +123,37 @@ class Utils {
         }
 
         return cls.cast(valueObject);
+    }
+
+    static float calculateRmsdb(byte[] buffer) {
+        if (buffer == null || buffer.length == 0) return 0;
+        short[] shortBuffer = new short[buffer.length / 2];
+        ByteBuffer.wrap(buffer).order(ByteOrder.LITTLE_ENDIAN).asShortBuffer().get(shortBuffer);
+
+        double[] normalizedDoubleBuffer = new double[shortBuffer.length];
+        for (int i = 0; i < shortBuffer.length; i++) {
+            normalizedDoubleBuffer[i] = (double) shortBuffer[i] / Short.MAX_VALUE;
+        }
+
+        return (float) volumeRMS(normalizedDoubleBuffer);
+    }
+
+    private static double volumeRMS(double[] raw) {
+        double sum = 0d;
+        if (raw.length==0) {
+            return sum;
+        } else {
+            for (double d : raw) {
+                sum += d;
+            }
+        }
+
+        double average = sum / raw.length;
+        double sumMeanSquare = 0d;
+        for (double d : raw) {
+            sumMeanSquare += Math.pow(d - average, 2d);
+        }
+        double averageMeanSquare = sumMeanSquare / raw.length;
+        return Math.sqrt(averageMeanSquare);
     }
 }

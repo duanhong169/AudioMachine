@@ -9,7 +9,9 @@ import java.util.Map;
 
 class MicAudioSource implements AudioSource, Runnable {
     private AudioRecord audioRecord;
+    private AudioVolumeListener audioVolumeListener;
     private final int sampleRate;
+    private final int frameSize;
 
     private Thread recorderThread;
     private AudioBuffer audioBuffer;
@@ -19,6 +21,7 @@ class MicAudioSource implements AudioSource, Runnable {
 
     private MicAudioSource(int sampleRate) {
         this.sampleRate = sampleRate;
+        frameSize = sampleRate / 1000 * 16;
     }
 
     public static MicAudioSource getAudioSource(Map<String, Object> params) {
@@ -104,8 +107,11 @@ class MicAudioSource implements AudioSource, Runnable {
         Logger.d("recorder loop start");
         android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_AUDIO);
         while (!isStopped) {
-            byte[] buffer = new byte[640];
+            byte[] buffer = new byte[frameSize];
             int length = audioRecord.read(buffer, 0, buffer.length);
+            if (audioVolumeListener != null) {
+                audioVolumeListener.onRmsChanged(Utils.calculateRmsdb(buffer));
+            }
             try {
                 audioBuffer.write(buffer, 0, length);
             } catch (IOException e) {
@@ -130,5 +136,10 @@ class MicAudioSource implements AudioSource, Runnable {
             recorderThread = null;
         }
         audioBuffer.markAsFinished();
+    }
+
+    @Override
+    public void setAudioVolumeListener(AudioVolumeListener listener) {
+        audioVolumeListener = listener;
     }
 }

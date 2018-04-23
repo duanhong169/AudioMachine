@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.IntDef;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 
 import org.json.JSONObject;
@@ -46,6 +47,11 @@ public class SpeechRecognizer {
         callbackHandler = new CallbackHandler(context);
         machineEventListener = new AudioMachine.EventListener() {
             @Override
+            public void onRmsChanged(float rmsdB) {
+                callbackHandler.onRmsChanged(rmsdB);
+            }
+
+            @Override
             public void didStartWorking() {
                 callbackHandler.onReadyForSpeech();
             }
@@ -83,9 +89,11 @@ public class SpeechRecognizer {
             }
 
             @Override
-            public void onAudio(byte[] buffer, boolean end) {
-                Logger.d("new buffer received: " + (buffer == null ? 0 : buffer.length));
-                callbackHandler.onBufferReceived(buffer);
+            public void onAudio(@NonNull byte[] buffer, boolean end) {
+                Logger.d("new buffer received: " + buffer.length);
+                if (buffer.length > 0) {
+                    callbackHandler.onBufferReceived(buffer);
+                }
             }
 
             @Override

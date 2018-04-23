@@ -6,13 +6,17 @@ import okio.Buffer;
 
 public class OkioBuffer implements AudioBuffer {
     private Buffer buffer = new Buffer();
+    private final Object bufferLock = new byte[0];
     private boolean isFinished;
 
     @Override
     public int readFully(byte[] sink) throws IOException {
         int offset = 0;
         while (offset < sink.length) {
-            int read = read(sink, offset, sink.length - offset);
+            int read;
+            synchronized (bufferLock) {
+                read = read(sink, offset, sink.length - offset);
+            }
             if (read <= 0) {
                 if (isFinished) {
                     return offset;
@@ -34,7 +38,9 @@ public class OkioBuffer implements AudioBuffer {
 
     @Override
     public int read(byte[] sink, int offset, int byteCount) {
-        return buffer.read(sink, offset, byteCount);
+        synchronized (bufferLock) {
+            return buffer.read(sink, offset, byteCount);
+        }
     }
 
     @Override
@@ -43,7 +49,9 @@ public class OkioBuffer implements AudioBuffer {
             throw new IOException(Utils.exceptionMessage(Error.ERROR_CLIENT,
                     "Buffer is marked as finished, write is prohibited. "));
         }
-        buffer.write(source, offset, byteCount);
+        synchronized (bufferLock) {
+            buffer.write(source, offset, byteCount);
+        }
     }
 
     @Override

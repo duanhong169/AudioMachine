@@ -28,6 +28,7 @@ public class SpeechRecognitionActivity extends AppCompatActivity {
     RxPermissions rxPermissions;
 
     @BindView(R.id.result) TextView result;
+
     @OnClick(R.id.stop) void stop() {
         if (speechRecognizer != null) {
             speechRecognizer.stopListening();
@@ -68,7 +69,7 @@ public class SpeechRecognitionActivity extends AppCompatActivity {
 
                             @Override
                             public void onRmsChanged(float rmsdB) {
-
+                                result.setTextSize(12 + 12 * rmsdB);
                             }
 
                             @Override

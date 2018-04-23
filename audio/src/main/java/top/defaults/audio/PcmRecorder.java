@@ -32,6 +32,11 @@ public class PcmRecorder {
         callbackHandler = new CallbackHandler(context);
         machineEventListener = new AudioMachine.EventListener() {
             @Override
+            public void onRmsChanged(float rmsdB) {
+                callbackHandler.onRmsChanged(rmsdB);
+            }
+
+            @Override
             public void didStartWorking() {
                 callbackHandler.onReadyForRecording();
             }

@@ -28,8 +28,8 @@ public class PcmRecordActivity extends AppCompatActivity {
     PcmRecorder recorder;
     RxPermissions rxPermissions;
 
-    @BindView(R.id.result)
-    TextView result;
+    @BindView(R.id.result) TextView result;
+
     @OnClick(R.id.stop) void stop() {
         if (recorder != null) {
             recorder.stopRecording();
@@ -65,7 +65,7 @@ public class PcmRecordActivity extends AppCompatActivity {
 
                             @Override
                             public void onRmsChanged(float rmsdB) {
-
+                                result.setTextSize(12 + 12 * rmsdB);
                             }
 
                             @Override
