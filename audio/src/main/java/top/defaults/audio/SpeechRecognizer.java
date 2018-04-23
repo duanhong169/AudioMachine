@@ -268,13 +268,11 @@ public class SpeechRecognizer {
         public JSONObject parsedResults;
     }
 
-    public interface RecognitionListener {
+    public interface RecognitionListener extends AudioVolumeListener {
 
         void onReadyForSpeech();
 
         void onBeginningOfSpeech();
-
-        void onRmsChanged(float rmsdB);
 
         void onBufferReceived(byte[] buffer);
 

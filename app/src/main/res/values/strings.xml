@@ -5,4 +5,7 @@
     <string name="cancel">Cancel</string>
     <string name="result">Result</string>
     <string name="pending_result">Pending result…</string>
+    <string name="activity1">Pcm Recorder</string>
+    <string name="activity2">Speech Recognition</string>
+    <string name="waiting">Waiting…</string>
 </resources>

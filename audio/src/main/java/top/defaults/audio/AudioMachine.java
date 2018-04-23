@@ -109,7 +109,7 @@ class AudioMachine {
                 onErrorDelegate(Utils.errorFromThrowable(e));
             } finally {
                 for (AudioInterceptor interceptor: audioInterceptors) {
-                    interceptor.onAudio(null, true);
+                    interceptor.onAudio(new byte[0], true);
                 }
                 audioProcessor.appendData(null, 0, 0, true);
                 audioCodec.close();

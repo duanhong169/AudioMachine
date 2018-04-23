@@ -2,7 +2,7 @@ package top.defaults.audio;
 
 class AudioProcessorFactory {
 
-    private static AudioProcessor createMockProcessor() {
+    static AudioProcessor createMockProcessor() {
         MockProcessorDelegate delegate = new MockProcessorDelegate();
         return new AudioProcessorImpl(delegate);
     }

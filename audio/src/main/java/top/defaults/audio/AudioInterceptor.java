@@ -1,5 +1,7 @@
 package top.defaults.audio;
 
+import android.support.annotation.NonNull;
+
 interface AudioInterceptor<T> {
 
     int POINT_BEFORE_ENCODE = 0;
@@ -8,7 +10,7 @@ interface AudioInterceptor<T> {
 
     int interceptPoint();
 
-    void onAudio(byte[] buffer, boolean end);
+    void onAudio(@NonNull byte[] buffer, boolean end);
 
     void registerCallback(InterceptResultCallback<T> callback);
 

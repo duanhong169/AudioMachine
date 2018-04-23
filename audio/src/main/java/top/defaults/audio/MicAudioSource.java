@@ -22,7 +22,12 @@ class MicAudioSource implements AudioSource, Runnable {
     }
 
     public static MicAudioSource getAudioSource(Map<String, Object> params) {
-        return new16kMicrophoneAudioSource();
+        int sampleRate = Utils.getInt(params, Keys.SAMPLE_RATE, 16000);
+        if (sampleRate == 8000) {
+            return new8kMicrophoneAudioSource();
+        } else {
+            return new16kMicrophoneAudioSource();
+        }
     }
 
     private static MicAudioSource new16kMicrophoneAudioSource() {

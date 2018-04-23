@@ -49,17 +49,13 @@ class SaveRawAudioToFileInterceptor implements AudioInterceptor<Bundle> {
     }
 
     @Override
-    public void onAudio(final byte[] buffer, boolean end) {
+    public void onAudio(@NonNull final byte[] buffer, boolean end) {
         if (fileWriter == null) return;
 
         Future<Integer> future = executorService.submit(new Callable<Integer>() {
             @Override
             public Integer call() throws Exception {
-                if (buffer != null) {
-                    return fileWriter.appendData(buffer);
-                } else {
-                    return 0;
-                }
+                return fileWriter.appendData(buffer);
             }
         });
         futures.offer(future);

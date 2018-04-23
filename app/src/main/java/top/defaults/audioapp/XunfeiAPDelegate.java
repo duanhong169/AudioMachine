@@ -20,15 +20,29 @@ import top.defaults.audio.AudioProcessorDelegate;
 import top.defaults.audio.Error;
 import top.defaults.audio.RawResult;
 
+/**
+ * 科大讯飞 REST API 开发指南：http://doc.xfyun.cn/rest_api/
+ *
+ * 注意，需要在讯飞后台设置IP白名单，否则请求会被拒绝：
+ *
+ * <pre>
+ * {
+ *   "code":"10105",
+ *   "desc":"illegal access|illegal client_ip",
+ *   "data":"",
+ *   "sid":"xxxxxx"
+ * }
+ * </pre>
+ */
 public class XunfeiAPDelegate implements AudioProcessorDelegate {
 
     private static final String API_ID = "5ad7fd88";
     private static final String API_KEY = "704492ea3911b2824c15c877575162f0";
+
     private static final String X_PARAM = "{\"engine_type\": \"sms16k\", \"aue\": \"raw\"}";
+    private static final MediaType MEDIA_TYPE = MediaType.parse("application/x-www-form-urlencoded; charset=utf-8");
 
     private ByteBuffer audio = ByteBuffer.allocate(2 * 1024 * 768); // max audio length 2M consider as BASE64
-
-    private static final MediaType MEDIA_TYPE = MediaType.parse("application/x-www-form-urlencoded; charset=utf-8");
     private OkHttpClient client = new OkHttpClient();
 
     private boolean exhausted = false; // delegate will not accept more data if it's exhausted
