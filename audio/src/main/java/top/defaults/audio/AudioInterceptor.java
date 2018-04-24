@@ -19,4 +19,39 @@ interface AudioInterceptor<T> {
         void onInterceptResult(T result);
     }
 
+    abstract class RawAudioInterceptor<T> implements AudioInterceptor<T> {
+
+        @Override
+        public int interceptPoint() {
+            return POINT_BEFORE_ENCODE;
+        }
+
+        @Override
+        public void onAudio(@NonNull byte[] buffer, boolean end) {
+
+        }
+
+        @Override
+        public void registerCallback(InterceptResultCallback<T> callback) {
+
+        }
+    }
+
+    abstract class EncodedAudioInterceptor<T> implements AudioInterceptor<T> {
+
+        @Override
+        public int interceptPoint() {
+            return POINT_AFTER_ENCODE;
+        }
+
+        @Override
+        public void onAudio(@NonNull byte[] buffer, boolean end) {
+
+        }
+
+        @Override
+        public void registerCallback(InterceptResultCallback<T> callback) {
+
+        }
+    }
 }

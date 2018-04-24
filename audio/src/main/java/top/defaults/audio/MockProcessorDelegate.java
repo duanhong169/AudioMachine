@@ -16,12 +16,7 @@ class MockProcessorDelegate implements AudioProcessorDelegate {
 
     @Override
     public Callable<RawResult> compose(final int index, byte[] buffer, int length, final boolean end) {
-        return new Callable<RawResult>() {
-            @Override
-            public RawResult call() throws Exception {
-                return new RawResult(String.format(Locale.getDefault(), "mock %d %s", index, end), index, end);
-            }
-        };
+        return () -> new RawResult(String.format(Locale.getDefault(), "mock %d %s", index, end), index, end);
     }
 
     @Override

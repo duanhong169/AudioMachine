@@ -31,14 +31,11 @@ public class SpeechRecognizer {
     private AudioMachine machine;
     private AudioMachine.EventListener machineEventListener;
     private AudioInterceptor interceptor;
-    private ResultParser<Results> parser = new ResultParser<Results>() {
-        @Override
-        public Results parse(RawResult rawResult) {
-            Results results = new Results();
-            results.type = rawResult.end ? Results.ResultsType.RESULTS_TYPE_FULL : Results.ResultsType.RESULTS_TYPE_PARTIAL;
-            results.rawJSONString = rawResult.string;
-            return results;
-        }
+    private ResultParser<Results> parser = rawResult -> {
+        Results results = new Results();
+        results.type = rawResult.end ? Results.ResultsType.RESULTS_TYPE_FULL : Results.ResultsType.RESULTS_TYPE_PARTIAL;
+        results.rawJSONString = rawResult.string;
+        return results;
     };
     private CallbackHandler callbackHandler;
 
@@ -81,24 +78,13 @@ public class SpeechRecognizer {
                 callbackHandler.onFinish();
             }
         };
-        interceptor = new AudioInterceptor<Void>() {
-
-            @Override
-            public int interceptPoint() {
-                return POINT_BEFORE_ENCODE;
-            }
-
+        interceptor = new AudioInterceptor.RawAudioInterceptor() {
             @Override
             public void onAudio(@NonNull byte[] buffer, boolean end) {
                 Logger.d("new buffer received: " + buffer.length);
                 if (buffer.length > 0) {
                     callbackHandler.onBufferReceived(buffer);
                 }
-            }
-
-            @Override
-            public void registerCallback(InterceptResultCallback<Void> listener) {
-
             }
         };
     }
@@ -133,12 +119,7 @@ public class SpeechRecognizer {
             }
 
             SaveRawAudioToFileInterceptor interceptor = new SaveRawAudioToFileInterceptor(saveRawAudioPath);
-            interceptor.registerCallback(new AudioInterceptor.InterceptResultCallback<Bundle>() {
-                @Override
-                public void onInterceptResult(Bundle result) {
-                    callbackHandler.onEvent(Keys.EVENT_TYPE_RAW_AUDIO_SAVED, result);
-                }
-            });
+            interceptor.registerCallback(result -> callbackHandler.onEvent(Keys.EVENT_TYPE_RAW_AUDIO_SAVED, result));
             machineBuilder.addInterceptor(interceptor);
         }
 
@@ -218,44 +199,44 @@ public class SpeechRecognizer {
             }
         }
 
-        public void onReadyForSpeech() {
+        void onReadyForSpeech() {
             Message.obtain(this, CALLBACK_ON_READY_FOR_SPEECH).sendToTarget();
         }
 
-        public void onBeginningOfSpeech() {
+        void onBeginningOfSpeech() {
             Message.obtain(this, CALLBACK_ON_BEGINNING_OF_SPEECH).sendToTarget();
         }
 
-        public void onRmsChanged(final float rmsdB) {
+        void onRmsChanged(final float rmsdB) {
             Message.obtain(this, CALLBACK_ON_RMS_CHANGED, rmsdB).sendToTarget();
         }
 
-        public void onBufferReceived(final byte[] buffer) {
+        void onBufferReceived(final byte[] buffer) {
             Message.obtain(this, CALLBACK_ON_BUFFER_RECEIVED, buffer).sendToTarget();
         }
 
-        public void onEndOfSpeech() {
+        void onEndOfSpeech() {
             Message.obtain(this, CALLBACK_ON_END_OF_SPEECH).sendToTarget();
         }
 
-        public void onError(final Error error) {
+        void onError(final Error error) {
             Message.obtain(this, CALLBACK_ON_ERROR, error).sendToTarget();
         }
 
-        public void onPartialResults(final Results results) {
+        void onPartialResults(final Results results) {
             Message.obtain(this, CALLBACK_ON_PARTIAL_RESULTS, results).sendToTarget();
         }
 
-        public void onResults(final Results results) {
+        void onResults(final Results results) {
             Message.obtain(this, CALLBACK_ON_RESULTS, results).sendToTarget();
         }
 
-        public void onEvent(final int eventType, final Bundle params) {
+        void onEvent(final int eventType, final Bundle params) {
             Message.obtain(this, CALLBACK_ON_EVENT, eventType, eventType, params)
                     .sendToTarget();
         }
 
-        public void onFinish() {
+        void onFinish() {
             Message.obtain(this, CALLBACK_ON_FINISH).sendToTarget();
         }
     }

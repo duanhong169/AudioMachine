@@ -114,12 +114,7 @@ public class PcmRecorder {
             }
 
             SaveRawAudioToFileInterceptor interceptor = new SaveRawAudioToFileInterceptor(saveRawAudioPath);
-            interceptor.registerCallback(new AudioInterceptor.InterceptResultCallback<Bundle>() {
-                @Override
-                public void onInterceptResult(Bundle result) {
-                    callbackHandler.onFileSaved(result);
-                }
-            });
+            interceptor.registerCallback(result -> callbackHandler.onFileSaved(result));
             machineBuilder.addInterceptor(interceptor);
         }
 
@@ -182,31 +177,31 @@ public class PcmRecorder {
             }
         }
 
-        public void onReadyForRecording() {
+        void onReadyForRecording() {
             Message.obtain(this, CALLBACK_ON_READY_FOR_RECORDING).sendToTarget();
         }
 
-        public void onRmsChanged(final float rmsdB) {
+        void onRmsChanged(final float rmsdB) {
             Message.obtain(this, CALLBACK_ON_RMS_CHANGED, rmsdB).sendToTarget();
         }
 
-        public void onBufferReceived(final byte[] buffer) {
+        void onBufferReceived(final byte[] buffer) {
             Message.obtain(this, CALLBACK_ON_BUFFER_RECEIVED, buffer).sendToTarget();
         }
 
-        public void onEndOfRecording() {
+        void onEndOfRecording() {
             Message.obtain(this, CALLBACK_ON_END_OF_RECORDING).sendToTarget();
         }
 
-        public void onError(final Error error) {
+        void onError(final Error error) {
             Message.obtain(this, CALLBACK_ON_ERROR, error).sendToTarget();
         }
 
-        public void onFileSaved(final Bundle params) {
+        void onFileSaved(final Bundle params) {
             Message.obtain(this, CALLBACK_ON_FILE_SAVED, params).sendToTarget();
         }
 
-        public void onFinish() {
+        void onFinish() {
             Message.obtain(this, CALLBACK_ON_FINISH).sendToTarget();
         }
     }

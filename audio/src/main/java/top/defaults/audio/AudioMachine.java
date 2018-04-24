@@ -41,12 +41,7 @@ class AudioMachine {
     void start(final EventListener eventListener) {
         Logger.d("-------- start() --------");
         this.eventListener = eventListener;
-        this.audioSource.setAudioVolumeListener(new AudioVolumeListener() {
-            @Override
-            public void onRmsChanged(float rmsdB) {
-                eventListener.onRmsChanged(rmsdB);
-            }
-        });
+        this.audioSource.setAudioVolumeListener(eventListener);
 
         audioCollectThread = new AudioCollectThread();
         audioCollectThread.start();
