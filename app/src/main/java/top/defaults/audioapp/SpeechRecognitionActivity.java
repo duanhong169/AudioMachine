@@ -24,6 +24,8 @@ import top.defaults.audio.AudioProcessorDelegate;
 import top.defaults.audio.Error;
 import top.defaults.audio.Keys;
 import top.defaults.audio.SpeechRecognizer;
+import top.defaults.audioapp.asr.BaiduAPDelegate;
+import top.defaults.audioapp.asr.XunfeiAPDelegate;
 
 public class SpeechRecognitionActivity extends AppCompatActivity {
 
