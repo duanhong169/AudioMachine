@@ -47,6 +47,7 @@ public class PcmRecordActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_audio);
         ButterKnife.bind(this);
+        setTitle(R.string.pcm_recorder);
 
         rxPermissions = new RxPermissions(this);
         RxView.clicks(findViewById(R.id.start))

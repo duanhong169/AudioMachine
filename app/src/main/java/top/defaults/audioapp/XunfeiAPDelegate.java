@@ -16,8 +16,8 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
-import top.defaults.audio.AudioProcessorDelegate;
 import top.defaults.audio.Error;
+import top.defaults.audio.OneShotDelegate;
 import top.defaults.audio.RawResult;
 
 /**
@@ -34,7 +34,7 @@ import top.defaults.audio.RawResult;
  * }
  * </pre>
  */
-public class XunfeiAPDelegate implements AudioProcessorDelegate {
+public class XunfeiAPDelegate extends OneShotDelegate {
 
     private static final String API_ID = "5ad7fd88";
     private static final String API_KEY = "704492ea3911b2824c15c877575162f0";
@@ -46,12 +46,6 @@ public class XunfeiAPDelegate implements AudioProcessorDelegate {
     private OkHttpClient client = new OkHttpClient();
 
     private boolean exhausted = false; // delegate will not accept more data if it's exhausted
-
-    @Override
-    public void initialize() {}
-
-    @Override
-    public void release() {}
 
     @Override
     public Callable<RawResult> compose(int index, byte[] buffer, int length, boolean end) {
@@ -112,16 +106,6 @@ public class XunfeiAPDelegate implements AudioProcessorDelegate {
             audio.put(buffer);
             return () -> new RawResult("Recording...", index, false);
         }
-    }
-
-    @Override
-    public int packageSize() {
-        return 3200; // 100ms in 16k sample rate
-    }
-
-    @Override
-    public int threadCount() {
-        return 1; // only support 1 thread
     }
 
     @Override

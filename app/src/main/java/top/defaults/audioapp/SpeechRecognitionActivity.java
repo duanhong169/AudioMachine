@@ -5,6 +5,8 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,6 +20,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import timber.log.Timber;
+import top.defaults.audio.AudioProcessorDelegate;
 import top.defaults.audio.Error;
 import top.defaults.audio.Keys;
 import top.defaults.audio.SpeechRecognizer;
@@ -28,6 +31,7 @@ public class SpeechRecognitionActivity extends AppCompatActivity {
     RxPermissions rxPermissions;
 
     @BindView(R.id.result) TextView result;
+    @BindView(R.id.delegateChooser) RadioGroup delegateChooser;
 
     @OnClick(R.id.stop) void stop() {
         if (speechRecognizer != null) {
@@ -46,6 +50,8 @@ public class SpeechRecognitionActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_audio);
         ButterKnife.bind(this);
+        setTitle(R.string.speech_recognition);
+        delegateChooser.setVisibility(View.VISIBLE);
 
         rxPermissions = new RxPermissions(this);
         RxView.clicks(findViewById(R.id.start))
@@ -119,7 +125,7 @@ public class SpeechRecognitionActivity extends AppCompatActivity {
                         params.put(Keys.PACKAGE_SIZE, 4000);
                         params.put(Keys.THREAD_COUNT, 5);
                         params.put(Keys.SAVE_RAW_AUDIO_PATH, Environment.getExternalStorageDirectory().getPath() + "/0/dev/1.pcm");
-                        params.put(Keys.AUDIO_PROCESSOR_DELEGATE, new XunfeiAPDelegate());
+                        params.put(Keys.AUDIO_PROCESSOR_DELEGATE, chooseDelegate());
                         speechRecognizer.startListening(params);
                     }
                 });
@@ -131,5 +137,17 @@ public class SpeechRecognitionActivity extends AppCompatActivity {
             speechRecognizer.cancel();
         }
         super.onPause();
+    }
+
+    private AudioProcessorDelegate chooseDelegate() {
+        switch (delegateChooser.getCheckedRadioButtonId()) {
+            case R.id.useBaidu:
+                break;
+            case R.id.useXunfei:
+                return new XunfeiAPDelegate();
+            default:
+                break;
+        }
+        return new BaiduAPDelegate();
     }
 }

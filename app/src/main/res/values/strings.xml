@@ -5,7 +5,9 @@
     <string name="cancel">Cancel</string>
     <string name="result">Result</string>
     <string name="pending_result">Pending result…</string>
-    <string name="activity1">Pcm Recorder</string>
-    <string name="activity2">Speech Recognition</string>
+    <string name="pcm_recorder">Pcm Recorder</string>
+    <string name="speech_recognition">Speech Recognition</string>
     <string name="waiting">Waiting…</string>
+    <string name="baidu">Baidu</string>
+    <string name="xunfei">Xunfei</string>
 </resources>

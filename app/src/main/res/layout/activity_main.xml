@@ -11,7 +11,7 @@
         android:id="@+id/activity1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/activity1"
+        android:text="@string/pcm_recorder"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
@@ -20,7 +20,7 @@
         android:id="@+id/activity2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/activity2"
+        android:text="@string/speech_recognition"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/activity1"/>
