@@ -4,6 +4,8 @@ public class Keys {
 
     public static final String AUDIO_PROCESSOR_DELEGATE = "audio.processor.delegate";
 
+    public static final String AUDIO_SOURCE = "audio.source";
+
     public static final String SAMPLE_RATE = "sample.rate";
 
     public static final String THREAD_COUNT = "thread.count";

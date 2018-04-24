@@ -13,7 +13,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class AudioProcessorImpl implements AudioProcessor {
+class AudioProcessorImpl implements AudioProcessor {
 
     private final ExecutorService executorService;
     private static final ThreadFactory sThreadFactory = new ThreadFactory() {

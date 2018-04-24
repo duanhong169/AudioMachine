@@ -3,7 +3,7 @@ package top.defaults.audio;
 import java.util.Locale;
 import java.util.concurrent.Callable;
 
-public class MockProcessorDelegate implements AudioProcessorDelegate {
+class MockProcessorDelegate implements AudioProcessorDelegate {
 
     private int packageSize = Constants.DEFAULT_PROCESSOR_PACKAGE_SIZE;
     private int threadCount = Constants.DEFAULT_PROCESSOR_THREAD_COUNT;

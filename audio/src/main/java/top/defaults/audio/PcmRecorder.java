@@ -99,7 +99,7 @@ public class PcmRecorder {
         Logger.d("startRecording params: " + params);
 
         AudioMachine.Builder machineBuilder = new AudioMachine.Builder()
-                .audioSource(MicAudioSource.getAudioSource(params))
+                .audioSource(AudioSourceFactory.createAudioSource(params))
                 .audioCodec(new RawCodec())
                 .audioProcessor(AudioProcessorFactory.createMockProcessor())
                 .addInterceptor(interceptor);

@@ -3,7 +3,7 @@ package top.defaults.audio;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-public class RawCodec implements AudioCodec {
+class RawCodec implements AudioCodec {
 
     @Override
     public int getFrameSize() {
