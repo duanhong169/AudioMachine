@@ -13,6 +13,8 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import top.defaults.logger.Logger;
+
 class AudioProcessorImpl implements AudioProcessor {
 
     private final ExecutorService executorService;

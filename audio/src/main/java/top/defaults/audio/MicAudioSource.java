@@ -7,6 +7,8 @@ import android.media.MediaRecorder;
 import java.io.IOException;
 import java.util.Map;
 
+import top.defaults.logger.Logger;
+
 class MicAudioSource implements AudioSource, Runnable {
     private AudioRecord audioRecord;
     private AudioVolumeListener audioVolumeListener;

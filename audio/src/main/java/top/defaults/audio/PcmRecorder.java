@@ -11,6 +11,8 @@ import android.support.v4.content.ContextCompat;
 
 import java.util.Map;
 
+import top.defaults.logger.Logger;
+
 public class PcmRecorder {
 
     private static final int CALLBACK_ON_READY_FOR_RECORDING = 1;

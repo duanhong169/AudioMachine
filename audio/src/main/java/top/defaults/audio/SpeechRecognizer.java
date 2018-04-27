@@ -14,6 +14,8 @@ import org.json.JSONObject;
 
 import java.util.Map;
 
+import top.defaults.logger.Logger;
+
 public class SpeechRecognizer {
 
     private static final int CALLBACK_ON_READY_FOR_SPEECH = 1;
